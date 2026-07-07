@@ -87,19 +87,11 @@ export const handleWebhookEvent = async (
     return { ok: true, message: `Ignored event type: ${type || 'unknown'}` };
   }
 
-  // Pull the full transfer detail from BitGo to learn amount + destination.
+  // The webhook payload already contains value, coin, hash, and state.
+  // We no longer fetch the full transfer via SDK since token transfers
+  // aren't available through the base-coin wallet endpoint anyway.
+  // The fallback logic below will match intents by coin + amount.
   let transfer: any = null;
-  if (payload.transfer) {
-    try {
-      const wallet = await getWallet();
-      transfer = await wallet.getTransfer({ id: payload.transfer });
-      console.log(`[webhook] fetched transfer ${payload.transfer}:`, transfer);
-    } catch (err: any) {
-      console.error(`[webhook] failed to fetch transfer ${payload.transfer}:`, err?.message);
-      // Don't fail the webhook entirely — we may still have payload.address
-      // and can proceed with what we have. BitGo may retry if we return an error.
-    }
-  }
 
   // Determine which of our deposit addresses received funds.
   // Try the payload first, then the fetched transfer details.
