@@ -174,13 +174,18 @@ app.patch('/intent/:receiptId', async (req: Request, res: Response) => {
     if (!intent) return res.status(404).json({ error: 'Intent not found' });
 
     const status = req.body?.status as DepositIntentRecord['status'] | undefined;
-    const allowed: DepositIntentRecord['status'][] = ['EXPIRED', 'FAILED', 'COMPLETED'];
+    const allowed: DepositIntentRecord['status'][] = ['EXPIRED', 'FAILED', 'COMPLETED', 'DETECTED'];
     if (!status || !allowed.includes(status)) {
       return res.status(400).json({ error: 'Unsupported status transition' });
     }
-    await setStatus(req.params.receiptId, status, {
-      ...(status === 'COMPLETED' ? { completedAt: Date.now() } : {}),
-    });
+
+    const extras: Partial<DepositIntentRecord> = {};
+    if (req.body?.txHash) extras.confirmedTxHash = req.body.txHash;
+    if (req.body?.detectedTxHash) extras.detectedTxHash = req.body.detectedTxHash;
+    if (status === 'DETECTED') extras.detectedAt = Date.now();
+    if (status === 'COMPLETED') extras.completedAt = Date.now();
+
+    await setStatus(req.params.receiptId, status, extras);
     return res.json({ ok: true, status });
   } catch (err: any) {
     return res.status(500).json({ error: err?.message ?? 'Failed to update intent' });

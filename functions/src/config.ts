@@ -67,6 +67,27 @@ export const config = {
 
   /** Whether compliance screening must pass before issuing chips. */
   complianceEnforced: (process.env.COMPLIANCE_ENFORCED ?? 'true') === 'true',
+
+  /**
+   * Controls which compliance outcomes block chip issuance.
+   *
+   *   'lenient'  — only block FAIL (sanctioned / explicitly blocked by BitGo).
+   *                REVIEW wallets pass through and chips are issued normally.
+   *                Best for: high-volume locations where you want maximum flow.
+   *
+   *   'moderate' — block FAIL and REVIEW. Only PASS wallets get chips.
+   *                REVIEW deposits are quarantined for manual inspection.
+   *                Best for: most locations — balanced approach.
+   *
+   *   'strict'   — block FAIL, REVIEW, and UNKNOWN (screen failure).
+   *                Only PASS wallets get chips. Safest but may block valid
+   *                deposits if BitGo's screen API has an outage.
+   *                Best for: high-risk jurisdictions or VIP handling.
+   *
+   *   Default: 'lenient' (preserves existing behavior — only FAIL blocks).
+   */
+  complianceStrictness: (process.env.COMPLIANCE_STRICTNESS ?? 'lenient') as
+    'lenient' | 'moderate' | 'strict',
 };
 
 /** Derive the base coin ('hteth' | 'eth') from a possibly token-qualified coin. */

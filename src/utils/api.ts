@@ -88,13 +88,19 @@ export const getIntentStatus = async (
 /** Cashier-side status transition (cancel / manual complete). */
 export const updateIntentStatus = async (
   receiptId: string,
-  status: DepositStatus
+  status: string,
+  txHash?: string,
+  detectedTxHash?: string
 ): Promise<void> => {
   const config = getConfig()
+  const body: Record<string, string> = { status }
+  if (txHash) body.txHash = txHash
+  if (detectedTxHash) body.detectedTxHash = detectedTxHash
+
   await fetch(`${config.apiBaseUrl}/intent/${receiptId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(body),
   }).catch(() => {
     console.warn('Failed to update intent status on backend')
   })

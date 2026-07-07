@@ -208,7 +208,25 @@ const finalizeConfirmedDeposit = async (
   // Amount check — allow exact or greater; reject underpayment.
   const underpaid = receivedAmount + 1e-9 < intent.usdcAmount;
 
-  if (config.complianceEnforced && compliance.status === 'FAIL') {
+  // Determine whether to block based on compliance strictness level.
+  const shouldBlock = (): boolean => {
+    if (!config.complianceEnforced) return false;
+    switch (config.complianceStrictness) {
+      case 'lenient':
+        return compliance.status === 'FAIL';
+      case 'moderate':
+        return compliance.status === 'FAIL' || compliance.status === 'REVIEW';
+      case 'strict':
+        return compliance.status !== 'PASS'; // blocks FAIL, REVIEW, and UNKNOWN
+    }
+  };
+
+  if (shouldBlock()) {
+    const reason = compliance.status === 'REVIEW'
+      ? 'REVIEW — held for manual inspection'
+      : compliance.status === 'UNKNOWN'
+      ? 'UNKNOWN — screening could not complete'
+      : 'FAIL — sanctioned or blocked by BitGo';
     await setStatus(intent.receiptId, 'FAILED', {
       confirmedTxHash: txHash,
       receivedAmount,
@@ -216,7 +234,8 @@ const finalizeConfirmedDeposit = async (
       compliance,
       confirmedAt: Date.now(),
     });
-    return { ok: true, message: `Intent ${intent.receiptId} FAILED compliance` };
+    console.log(`[webhook] Intent ${intent.receiptId} FAILED compliance: ${reason}`);
+    return { ok: true, message: `Intent ${intent.receiptId} FAILED compliance (${reason})` };
   }
 
   if (underpaid) {
