@@ -1,0 +1,18 @@
+# Dependencies — these get installed fresh inside the container via npm ci
+node_modules
+
+# Built output — not needed inside the dev container
+dist
+
+# Environment file — contains private keys, never bake into the image
+# It is loaded at runtime via docker-compose env_file instead
+.env
+
+# Git history — not needed inside the container
+.git
+.gitignore
+
+# Docker files themselves — no need to copy these into the image
+Dockerfile
+docker-compose.yml
+.dockerignore

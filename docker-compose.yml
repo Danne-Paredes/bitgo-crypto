@@ -1,0 +1,27 @@
+services:
+  app:
+    # Build the image using the Dockerfile in the current directory
+    build: .
+
+    # Map port 5173 on your Mac to port 5173 inside the container.
+    # You visit http://localhost:5173 in your browser as normal.
+    ports:
+      - "5173:5173"
+
+    # Mount the project folder into the container at /app.
+    # This means edits you make on your Mac are instantly reflected inside
+    # the container — no rebuild needed for code changes.
+    # CRITICALLY: only this folder is mounted. Nothing else on your Mac is accessible.
+    volumes:
+      - .:/app
+      # Prevent the host node_modules from overwriting the container's node_modules
+      - /app/node_modules
+
+    # Load environment variables from your .env file into the container.
+    # The .env file itself is NOT copied into the image — it stays on your machine.
+    env_file:
+      - .env
+
+    # Keep stdin open so the container doesn't exit immediately
+    stdin_open: true
+    tty: true

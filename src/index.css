@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-kv-red: #d02424;
+  --color-kv-gray: #b8b4b4;
+  --color-kv-logo-gray: #5c605c;
+  --color-slate-gray: #6D6D6D;
+
+  --breakpoint-2xs: 440px;
+  --breakpoint-3xs: 340px;
+  --breakpoint-4xs: 240px;
+
+  --animate-spin-fast: spin 0.8s linear infinite;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+button:hover {
+  opacity: 0.92;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}

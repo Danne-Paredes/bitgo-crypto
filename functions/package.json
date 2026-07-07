@@ -1,0 +1,39 @@
+{
+  "name": "eth_casino_cashier_functions",
+  "description": "Firebase Cloud Functions backend for the casino cashier — BitGo deposit-address integration",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "mempool": "node lib/mempool-service.js",
+    "mempool:dev": "tsc && node lib/mempool-service.js",
+    "register-webhook": "node register-webhook.mjs"
+  },
+  "dependencies": {
+    "bitgo": "^51.7.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.16.0",
+    "express": "^4.21.2",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.1.1",
+    "rpc-websockets": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.0",
+    "typescript": "~5.9.3"
+  },
+  "private": true
+}

@@ -1,0 +1,14 @@
+.env
+functions/.env
+node_modules/
+dist/
+build/
+.DS_Store
+.idea/
+.vscode/settings.json
+*.log
+.cache/
+coverage/
+.eslintcache
+.next/
+out/

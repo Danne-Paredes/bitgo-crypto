@@ -1,0 +1,9 @@
+[admin] Registering BitGo webhook at: https://us-central1-kv-crypto-app.cloudfunctions.net/cashier/webhook
+[admin] BitGo environment: test
+[admin] BitGo wallet ID: 6a42a902600df4370699b590d40fa879
+[admin] BitGo coin: hteth:hterc6dp
+[admin] Making API request to: POST https://testnet.bitgo.com/api/v2/hteth/wallet/6a42a902600df4370699b590d40fa879/webhooks
+[admin] Response status: 525
+[admin] ✗ Failed to register webhook
+[admin] Response: error code: 525
+
